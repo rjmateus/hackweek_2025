@@ -12,7 +12,7 @@ spec:
   template:
     metadata:
       labels:
-        app: demo-app.fullname
+        app: demo-app
     spec:
       containers:
         - name: {{ .Chart.Name }}
