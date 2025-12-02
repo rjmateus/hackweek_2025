@@ -48,7 +48,7 @@ A. Tag the Image
 
 You must tag the image with the registry path (<username>/<repository>:<tag>). This links your local image to the remote repository.
 
-docker tag simple-web [YOUR_DOCKERHUB_USERNAME]/simple-web:v1
+podman tag hw2025 [YOUR_DOCKERHUB_USERNAME]/hw2025:v1
 
 
 B. Log in to the Registry
