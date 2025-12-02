@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "demo-app.fullname" . }}
+  name: demo-app
   labels:
-    {{- include "demo-app.labels" . | nindent 4 }}
+    app: demo-app
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ include "demo-app.fullname" . }}
+      app: demo-app
   template:
     metadata:
       labels:
-        app: {{ include "demo-app.fullname" . }}
+        app: demo-app.fullname
     spec:
       containers:
         - name: {{ .Chart.Name }}

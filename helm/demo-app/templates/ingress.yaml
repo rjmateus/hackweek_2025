@@ -2,9 +2,9 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ include "demo-app.fullname" . }}
+  name: demo-app
   labels:
-    {{- include "demo-app.labels" . | nindent 4 }}
+    app: dem-app
   # Add annotations specific to Traefik if needed (often not necessary on K3s default)
 spec:
   ingressClassName: {{ .Values.ingress.className }}
@@ -16,7 +16,7 @@ spec:
             pathType: {{ .Values.ingress.pathType }}
             backend:
               service:
-                name: {{ include "demo-app.fullname" . }}
+                name: demo-app
                 port:
                   number: {{ .Values.service.port }}
 {{- end }}
