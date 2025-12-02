@@ -27,5 +27,5 @@ ext_pillar:
   - git:
     - main https://github.com/rjmateus/hackweek_2025.git:
       - root: salt/pillar
-
+      - env: base
 ```
