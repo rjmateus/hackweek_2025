@@ -4,10 +4,11 @@
 # Machine provisioning (optinal)
 
 ## Micro 6.1
-> Deploy sle-micro 6.1 machine with the GM image, to have updates available
-> install helm `transactional-update pkg install helm`
-> install an older version for k3s: `curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=v1.33.6+k3s1 sh -`
-> install k9s: 
+
+- Deploy sle-micro 6.1 machine with the GM image, to have updates available
+- install helm `transactional-update pkg install helm`
+- install an older version for k3s: `curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=v1.33.6+k3s1 sh -`
+- install k9s: 
     - cd ~
     - curl -LO https://github.com/derailed/k9s/releases/download/v0.50.6/k9s_Linux_amd64.tar.gz
     - tar -xzf k9s_Linux_amd64.tar.gz
@@ -22,9 +23,9 @@ A this stage the only missing part is confirm DNS and Machine name
 
 ## sles15sp7
 
-Download and deploy the image `SLES15-SP7-Minimal-VM.x86_64-Cloud-GM.qcow2`
-Set the hostname with `hostnamectl set-hostname <HOSTNAME>`
-Reboot (just in case)
+- Download and deploy the image `SLES15-SP7-Minimal-VM.x86_64-Cloud-GM.qcow2`
+- Set the hostname with `hostnamectl set-hostname <HOSTNAME>`
+- Reboot (just in case)
 
 
 # MLM configuration
