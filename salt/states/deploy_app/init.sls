@@ -7,13 +7,21 @@ Helm status:
   cmd.run:
      - name: helm status demo-release
 
+{% if pillars.get('demo_app') %}
+
 #helm:
 #  pkg.installed
+
+
 
 helm_release_is_present:
   helm.release_present:
     - name: demo-release
-    - chart: oci://registry-1.docker.io/rjmateus/demo-app
-    - version: 0.0.1
+    - chart: {{grains['demo_app']['helm']['repo']}}
+    {% if pillars.get('demo_app.helm.version') %}
+    - version: {{grains['demo_app']['helm']['version']}}
+    {% endif %}   
 #  - require:
 #      - pkg: helm
+
+ {% endif %}
