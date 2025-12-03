@@ -21,7 +21,7 @@ A this stage the only missing part is confirm DNS and Machine name
 ## Deploy application
 
 In the first day I'm deplying the application to make sure all the bits are in-place.
-See decicated readme on the helm sub-folder to see how
+See decicated readme on the helm sub-folder to see how to do it.
 
 ## Register to MLM
 
@@ -29,4 +29,35 @@ On the server, generated the bootstrap script: https://documentation.suse.com/mu
 
 In the machine run `curl --insecure https://<SERVER_FQDN>/pub/bootstrap/bootstrap.sh | bash -
 
-Go the the MLM server ans acept the salt key. The process should finish.
+Go the the MLM server ans accept the salt key. The process should finish with the machine fulle registered.
+
+
+# Application deployment and Update with MLM
+
+We will be using MLM to set wich version should be deployed (using salt pillars) and how to deploy it (using salt states).
+The plan is to be flexible mechanism to allow user to define which version should be deploy with different levels of granularity. For example, a global version, a version at store level or even a version at terminal level.
+
+This will allow to have canary deployments, and controlled roll-out.
+
+Pillar definition can be done using different machine caracterists, and the data can be overwrite at different levels. We will be laveraging the top.sls.
+
+- Assuming naming convention:
+    - US01-S001-T001-N0 - machine deployed
+    - US01-S001-T002-N0
+    - US01-S001-T003-N0
+    - US01-S001-T003-N1
+
+where: 
+    "US01" -> region
+    "S001" -> store number
+    "T001" -> terminal number
+    "N0" -> termonal node number
+
+## 
+
+
+
+# Alternative solution
+
+Develop an use a salt formula that would allow us to assign the pillar information and salt state to each system and system group.
+This swifts the infrastructure management from gitops to fully integrated with MLM. The formula definition is how costumer currently manage retail deployment based on image (pxed booting) on MLM/uyuni.
