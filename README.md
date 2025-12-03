@@ -1,7 +1,7 @@
 # hackweek_2025
 
 
-## Machine provisioning
+## Machine provisioning (optinal)
 > Deploy sle-micro 6.1 machine with the GM image, to have updates available
 > install helm `transactional-update pkg install helm`
 > install an older version for k3s: `curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=v1.33.6+k3s1 sh -`
@@ -35,11 +35,12 @@ Go the the MLM server ans accept the salt key. The process should finish with th
 # Application deployment and Update with MLM
 
 We will be using MLM to set wich version should be deployed (using salt pillars) and how to deploy it (using salt states).
-The plan is to be flexible mechanism to allow user to define which version should be deploy with different levels of granularity. For example, a global version, a version at store level or even a version at terminal level.
+The plan is to be flexible mechanism to allow user to define which version should be deploy with different levels of granularity. 
+For example, a global version, a version at store level or even a version at terminal level.
 
 This will allow users to have canary deployments, and controlled roll-out.
 
-Pillar definition can be done using different machine caracterists, and the data can be overwrite at different levels. We will be laveraging the top.sls.
+Pillar definition can be done using different machine caracterists (based on machine_id and grains), and the data can be overwrite at different levels. We will be laveraging the top.sls.
 
 - Assuming naming convention:
     - US01-S001-T001-N0 - machine deployed
@@ -63,7 +64,7 @@ The pillar and states data can be seem in the salt sub-folder.
 - By using MLM group pillar assignement means we must have a entry on the top.sls file for each store/group. It can make the top SLS grow a lot (2 lines per store) and have one sub-folder (or sls file) per store.
 - Adding a new store means:
     - create MLM system group
-    - Update top.sls file
+    - Update top.sls file to match the naming convention
     - assign machines to the group
 
 
@@ -75,5 +76,5 @@ Create a salt configuration channel which the only thing it does is include the 
 
 # Alternative solution for pillar and state assign
 
-Develop an use a salt formula that would allow us to assign the pillar information and salt state to each system and system group.
+Develop an use a **salt formula** that would allow us to assign the pillar information and salt state to each system and system group.
 This swifts the infrastructure management from gitops to fully integrated with MLM. The formula definition is how costumer currently manage retail deployment based on image (pxed booting) on MLM/uyuni.
