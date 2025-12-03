@@ -73,6 +73,11 @@ The pillar and states data can be seem in the salt sub-folder.
 Create a salt configuration channel which the only thing it does is include the state defined on git.
 
 
+# Deploy
+
+> `salt 'US01-S001-T002-N0.suse.lab' saltutil.sync_all`
+> `salt 'US01-S001-T002-N0.suse.lab' state.apply deploy_app`
+
 
 # Alternative solution for pillar and state assign
 
