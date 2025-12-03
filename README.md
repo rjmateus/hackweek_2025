@@ -37,7 +37,7 @@ Go the the MLM server ans accept the salt key. The process should finish with th
 We will be using MLM to set wich version should be deployed (using salt pillars) and how to deploy it (using salt states).
 The plan is to be flexible mechanism to allow user to define which version should be deploy with different levels of granularity. For example, a global version, a version at store level or even a version at terminal level.
 
-This will allow to have canary deployments, and controlled roll-out.
+This will allow users to have canary deployments, and controlled roll-out.
 
 Pillar definition can be done using different machine caracterists, and the data can be overwrite at different levels. We will be laveraging the top.sls.
 
@@ -53,11 +53,27 @@ where:
     "T001" -> terminal number
     "N0" -> termonal node number
 
-## 
+
+On MLM UI create a system group for each store, and and assign the machines to this group.
+Use this group ID to match the pillar data to be applied in the store.
+Assign a configuration channel for the application deployment on the MLM web UI.
+The pillar and states data can be seem in the salt sub-folder.
+
+*** Problems *** 
+- By using MLM group pillar assignement means we must have a entry on the top.sls file for each store/group. It can make the top SLS grow a lot (2 lines per store) and have one sub-folder (or sls file) per store.
+- Adding a new store means:
+    - create MLM system group
+    - Update top.sls file
+    - assign machines to the group
+
+
+## MLM configuration channel
+
+Create a salt configuration channel which the only thing it does is include the state defined on git.
 
 
 
-# Alternative solution
+# Alternative solution for pillar and state assign
 
 Develop an use a salt formula that would allow us to assign the pillar information and salt state to each system and system group.
 This swifts the infrastructure management from gitops to fully integrated with MLM. The formula definition is how costumer currently manage retail deployment based on image (pxed booting) on MLM/uyuni.
