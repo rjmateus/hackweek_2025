@@ -11,11 +11,12 @@ k3s_prerequisites:
   pkg.installed:
     - pkgs:
       - curl
+      - helm
 
 # 2. Install K3s (Server Mode) if the binary is NOT present
 k3s_install_server:
   cmd.run:
-    - name: "curl -sfL {{ k3s_install_script }} | sh -"
+    - name: "curl -sfL {{ k3s_install_script }} | INSTALL_K3S_VERSION=v1.33.6+k3s1 sh -"
     # The 'unless' condition checks for the main K3s executable.
     # If the file exists, the installation command will be skipped.
     - unless: test -f {{ k3s_binary }}
@@ -29,11 +30,6 @@ k3s_service_running:
     # This ensures the service management is only attempted if the installation was successful.
     - require:
       - cmd: k3s_install_server
-
-
-helm:
-  pkg.installed
-
 
 ensure_kubeconfig_path:
   file.directory:

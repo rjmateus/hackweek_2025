@@ -29,3 +29,6 @@ ext_pillar:
       - root: salt/pillar
       - env: base
 ```
+
+
+get existing token from a cluster: cat /var/lib/rancher/k3s/server/node-token

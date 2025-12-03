@@ -1,7 +1,9 @@
 # hackweek_2025
 
 
-## Machine provisioning (optinal)
+# Machine provisioning (optinal)
+
+## Micro 6.1
 > Deploy sle-micro 6.1 machine with the GM image, to have updates available
 > install helm `transactional-update pkg install helm`
 > install an older version for k3s: `curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=v1.33.6+k3s1 sh -`
@@ -18,21 +20,47 @@
 
 A this stage the only missing part is confirm DNS and Machine name
 
-## Deploy application
+## sles15sp7
 
-In the first day I'm deplying the application to make sure all the bits are in-place.
-See decicated readme on the helm sub-folder to see how to do it.
-
-## Register to MLM
-
-On the server, generated the bootstrap script: https://documentation.suse.com/multi-linux-manager/5.1/en/docs/client-configuration/registration-bootstrap.html#_create_a_bootstrap_script_from_webui
-
-In the machine run `curl --insecure https://<SERVER_FQDN>/pub/bootstrap/bootstrap.sh | bash -
-
-Go the the MLM server ans accept the salt key. The process should finish with the machine fulle registered.
+Download and deploy the image `SLES15-SP7-Minimal-VM.x86_64-Cloud-GM.qcow2`
+Set the hostname with `hostnamectl set-hostname <HOSTNAME>`
+Reboot (just in case)
 
 
-# Application deployment and Update with MLM
+# MLM configuration
+
+
+## Configure GitFS
+
+Configure GITFS. Look at `salt/readme.md`file to see how to set it up. 
+
+## Create a state configuration channel
+
+Add channel label `deploy_demo_app`. In the init.sls insert the following code:
+```
+include:
+   - deploy_app
+```
+
+This will include the salt state defined in this git repository.
+
+## Create activation key
+
+In MLM create an activation-key with:
+    - Sles15sp7 channels, including "Containers Module" wich is needed
+    - If you want to automate application deployment at registration time:
+        - Add the configuration channel `deploy_demo_app`
+        - After creating the activation key select the checkbox `Deploy configuration files to systems on registration`
+
+# Register machine to MLM
+
+Before register the machine make sure to have the needed pillar information for the system in the pillar data.
+If you are not sure about the pillar data, you can disable the deploy at registration time, and just register the machine, check the pillar data. The application deployment can done after registration (by assigning configuration channel, and apply the state).
+
+Use the regular registration machanism and select the created activation key.
+
+
+# Details at application deployment and Update with MLM
 
 We will be using MLM to set wich version should be deployed (using salt pillars) and how to deploy it (using salt states).
 The plan is to be flexible mechanism to allow user to define which version should be deploy with different levels of granularity. 
@@ -40,14 +68,26 @@ For example, a global version, a version at store level or even a version at ter
 
 This will allow users to have canary deployments, and controlled roll-out.
 
-Pillar definition can be done using different machine caracterists (based on machine_id and grains), and the data can be overwrite at different levels. We will be laveraging the top.sls.
+Pillar definition can be done using different machine caracterists (based on machine_id and grains), and the data can be overwrite at different levels.
+
+Have a look at the salt/pillar subfolder
+
+*** Problems *** 
+- By using MLM group pillar assignement means we must have a entry on the top.sls file for each store/minion. It can make the top SLS grow a lot (2 lines per store) and have one sub-folder (or sls file) per store.
+- Adding a new store means:
+    - Update top.sls file to match the naming convention
+    - Define the store/minion pillar data
+
+
+## Naming convention
+
+All large scale customer have some kind of naming convention to know which machine is where. In this example we will use the following naming convention.
 
 - Assuming naming convention:
-    - US01-S001-T001-N0 - machine deployed
-    - US01-S001-T002-N0
-    - US01-S001-T003-N0
-    - US01-S001-T003-N1
-
+    - US01-S001-T001-N0 - machine deployed with sle micro 6.1
+    - US01-S001-T002-N0 - sles15sp7
+    - US01-S001-T003-N0 - sles15sp7
+    - US01-S001-T003-N1 - sles15sp7
 where: 
     "US01" -> region
     "S001" -> store number
@@ -55,28 +95,15 @@ where:
     "N0" -> termonal node number
 
 
-On MLM UI create a system group for each store, and and assign the machines to this group.
-Use this group ID to match the pillar data to be applied in the store.
-Assign a configuration channel for the application deployment on the MLM web UI.
-The pillar and states data can be seem in the salt sub-folder.
+# Troubleshoting
 
-*** Problems *** 
-- By using MLM group pillar assignement means we must have a entry on the top.sls file for each store/group. It can make the top SLS grow a lot (2 lines per store) and have one sub-folder (or sls file) per store.
-- Adding a new store means:
-    - create MLM system group
-    - Update top.sls file to match the naming convention
-    - assign machines to the group
+Force data update
 
+`salt-run fileserver.update`
+`salt-run git_pillar.update`
+`salt '<MINION_ID>' saltutil.refresh_pillar`
 
-## MLM configuration channel
-
-Create a salt configuration channel which the only thing it does is include the state defined on git.
-
-
-# Deploy
-
-> `salt 'US01-S001-T002-N0.suse.lab' saltutil.sync_all`
-> `salt 'US01-S001-T002-N0.suse.lab' state.apply deploy_app`
+`salt '<MINION_ID>' saltutil.sync_all`
 
 
 # Alternative solution for pillar and state assign
