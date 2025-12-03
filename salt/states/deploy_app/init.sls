@@ -7,7 +7,7 @@ Helm status:
   cmd.run:
      - name: helm status demo-release
 
-{% if pillars.get('demo_app') %}
+{% if pillar.get('demo_app') %}
 
 #helm:
 #  pkg.installed
@@ -17,9 +17,9 @@ Helm status:
 helm_release_is_present:
   helm.release_present:
     - name: demo-release
-    - chart: {{grains['demo_app']['helm']['repo']}}
-    {% if pillars.get('demo_app.helm.version') %}
-    - version: {{grains['demo_app']['helm']['version']}}
+    - chart: {{pillar['demo_app']['helm']['repo']}}
+    {% if pillar.get('demo_app.helm.version') %}
+    - version: {{pillar['demo_app']['helm']['version']}}
     {% endif %}   
 #  - require:
 #      - pkg: helm
