@@ -1,25 +1,72 @@
-#get app demo:
-#  cmd.run:
-#     - name: kubectl get ingress demo-app
-#
-#
-#Helm status:
-#  cmd.run:
-#     - name: helm status demo-release
-
 {% if pillar.get('demo_app') %}
 
-#helm:
-#  pkg.installed
+{% set k3s_install_script = 'https://get.k3s.io' %}
+{% set k3s_binary = '/usr/local/bin/k3s' %}
+{% set kubeconfig_k3s = '/etc/rancher/k3s/k3s.yaml' %}
+{% set kubeconfig_default = '/root/.kube/config' %}
+{% set kubeconfig_default_dir = '/root/.kube' %}
+
+# 1. Install necessary dependencies (e.g., curl, needed for the installer script)
+k3s_prerequisites:
+  pkg.installed:
+    - pkgs:
+      - curl
+
+# 2. Install K3s (Server Mode) if the binary is NOT present
+k3s_install_server:
+  cmd.run:
+    - name: "curl -sfL {{ k3s_install_script }} | sh -"
+    # The 'unless' condition checks for the main K3s executable.
+    # If the file exists, the installation command will be skipped.
+    - unless: test -f {{ k3s_binary }}
 
 
+# 3. Ensure K3s is running
+# The K3s installation script sets up a systemd service, so we just check on it.
+k3s_service_running:
+  service.running:
+    - name: k3s
+    # This ensures the service management is only attempted if the installation was successful.
+    - require:
+      - cmd: k3s_install_server
+
+
+helm:
+  pkg.installed
+
+
+ensure_kubeconfig_path:
+  file.directory:
+    - name: {{ kubeconfig_default_dir }}
+    - user: root
+    - group: root
+    - mode: '700'
+    - require:
+      - service: k3s_service_running
+      
+kubeconfig_symlink:
+  file.symlink:
+    - name: {{ kubeconfig_default }}
+    - target: {{ kubeconfig_k3s }}
+    - force: True # Ensures it overwrites any existing file at the destination
+    - require:
+      - file: ensure_kubeconfig_path
 
 helm_release_is_present:
   helm.release_present:
     - name: demo-release
     - chart: {{pillar['demo_app']['helm']['repo']}}
     - version: {{pillar['demo_app']['helm']['version']}}
-#  - require:
-#      - pkg: helm
+#    - kvflags:
+#      - kubeconfig: {{ kubeconfig_k3s }} # Tell Helm where K3s config is
+    - set:
+       - ingress.host={{ salt['grains.get']('fqdn') | lower }} # <-- This is THE Machine FQDN
+#       {% if 'demo_app:image:tag' in pillar %} # fixme. need to check the value is set
+       - image.tag={{pillar['demo_app']['image']['tag']}}
+#       {% endif %}
+       - image.repository={{pillar['demo_app']['image']['repository']}}
+    - require:
+        - pkg: helm
+        - service: k3s_service_running
 
  {% endif %}
