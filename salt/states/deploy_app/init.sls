@@ -42,11 +42,17 @@ k3s_config_file:
   {% set k3s_version_install = "INSTALL_K3S_VERSION=" + salt['pillar.get']('k3s_version', "") %}
 {% endif %}
 
+{% set k3s_agent = "server" %}
+
+{% if salt['pillar.get']('k3s:config:agent', False) %}
+  {% set k3s_agent = "INSTALL_K3S_EXEC=agent" %}
+{% endif %}
+
 
 # 3. Install K3s (Server Mode) if the binary is NOT present
 k3s_install_server:
   cmd.run:
-    - name: "curl -sfL {{ k3s_install_script }} | {{ k3s_version_install }} sh -"
+    - name: "curl -sfL {{ k3s_install_script }} | {{ k3s_version_install }} {{ k3s_agent }} sh -"
     # The 'unless' condition checks for the main K3s executable.
     # If the file exists, the installation command will be skipped.
     - unless: test -f {{ k3s_binary }}
