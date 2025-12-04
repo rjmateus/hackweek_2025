@@ -43,15 +43,15 @@ k3s_config_file:
 
 {% set k3s_version = "" %}
 
-{% if pillar['k3s'] is defined and 'version' in pillar['k3s'] %}
-  {% set k3s_version = "INSTALL_K3S_VERSION=" + salt['pillar.get']('k3s:version', "") %}
+{% if pillar['k3s_version'] is defined %}
+  {% set k3s_version_install = "INSTALL_K3S_VERSION=" + salt['pillar.get']('k3s_version', "") %}
 {% endif %}
 
 
 # 3. Install K3s (Server Mode) if the binary is NOT present
 k3s_install_server:
   cmd.run:
-    - name: "curl -sfL {{ k3s_install_script }} | {{ k3s_version }} sh -"
+    - name: "curl -sfL {{ k3s_install_script }} | {{ k3s_version_install }} sh -"
     # The 'unless' condition checks for the main K3s executable.
     # If the file exists, the installation command will be skipped.
     - unless: test -f {{ k3s_binary }}
@@ -89,7 +89,33 @@ helm:
   pkg.installed
 
 ## deploy update controller
-# TODO
+
+{% if k3s_config.get('server') is not defined %}
+
+install_update_controller:
+   cmd.run:
+     - name: kubectl apply -f https://github.com/rancher/system-upgrade-controller/releases/latest/download/crd.yaml -f https://github.com/rancher/system-upgrade-controller/releases/latest/download/system-upgrade-controller.yaml
+
+
+update_controler_plan:
+  file.managed:
+    - name: /etc/rancher/k3s/k3s-upgrade-plans.yaml
+    - source: salt://deploy_app/k3s-upgrade-plans.yaml.jinja  # Path to your template file
+    - user: root
+    - group: root
+    - mode: 600
+    - template: jinja
+    - defaults:
+        k3s_version: {{ k3s_config.get('k3s_version', None) }}
+    - require:
+      - file: k3s_config_dir
+      - cmd: install_update_controller
+
+deploy_upgrade_plan:
+   cmd.run:
+      - name: kubectl apply -f /etc/rancher/k3s/k3s-upgrade-plans.yaml
+
+{% endif %}
 
 ## deploy demo app
 helm_release_is_present:

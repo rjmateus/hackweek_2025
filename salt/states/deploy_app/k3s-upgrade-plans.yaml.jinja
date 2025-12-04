@@ -1,0 +1,26 @@
+apiVersion: upgrade.cattle.io/v1
+kind: Plan
+metadata:
+  name: server-plan
+  namespace: system-upgrade
+spec:
+  # Upgrade one server node at a time
+  concurrency: 1
+  # Cordon (drain) the node before upgrade
+  cordon: true
+  nodeSelector:
+    matchExpressions:
+      # Targets nodes with the control-plane label
+      - key: node-role.kubernetes.io/control-plane
+        operator: In
+        values:
+        - "true"
+  serviceAccountName: system-upgrade
+  upgrade:
+    image: rancher/k3s-upgrade
+{% if k3s_version is none %}
+    # Target the stable channel for continuous upgrades
+    #channel: https://update.k3s.io/v1-release/channels/stable
+{% else %}
+  version: {{ k3s_version }}
+{% endif %}
