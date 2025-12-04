@@ -64,7 +64,11 @@ k3s_install_server:
 # The K3s installation script sets up a systemd service, so we just check on it.
 k3s_service_running:
   service.running:
+{% if salt['pillar.get']('k3s:config:agent', False) %}
+    - name: k3s-agent
+{% else %}
     - name: k3s
+{%endif%}
     # This ensures the service management is only attempted if the installation was successful.
     - require:
       - cmd: k3s_install_server
