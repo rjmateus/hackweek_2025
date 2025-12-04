@@ -1,10 +1,6 @@
-#{% set server = pillar.get('k3s:config:server') %}
-
-
 {% if server is not none  %}
 server: {{ server }}
 {% endif %}
-
 {% if token is not none %}
 token: {{ token }}
 {% endif %}
