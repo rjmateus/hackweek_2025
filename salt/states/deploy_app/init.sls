@@ -90,11 +90,9 @@ helm:
 
 ## deploy update controller
 
-#{% if salt['pillar.get']('k3s:config:server', None) is none %}
-
 install_update_controller:
-   cmd.run:
-     - name: kubectl apply -f https://github.com/rancher/system-upgrade-controller/releases/latest/download/crd.yaml -f https://github.com/rancher/system-upgrade-controller/releases/latest/download/system-upgrade-controller.yaml
+  cmd.run:
+    - name: kubectl apply -f https://github.com/rancher/system-upgrade-controller/releases/latest/download/crd.yaml -f https://github.com/rancher/system-upgrade-controller/releases/latest/download/system-upgrade-controller.yaml
 
 
 update_controler_plan:
@@ -112,10 +110,9 @@ update_controler_plan:
       - cmd: install_update_controller
 
 deploy_upgrade_plan:
-   cmd.run:
-      - name: kubectl apply -f /etc/rancher/k3s/k3s-upgrade-plans.yaml
+  cmd.run:
+    - name: kubectl apply -f /etc/rancher/k3s/k3s-upgrade-plans.yaml
 
-#{% endif %}
 
 ## deploy demo app
 helm_release_is_present:
