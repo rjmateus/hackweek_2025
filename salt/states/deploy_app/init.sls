@@ -51,7 +51,7 @@ k3s_config_file:
 # 3. Install K3s (Server Mode) if the binary is NOT present
 k3s_install_server:
   cmd.run:
-    - name: "curl -sfL {{ k3s_install_script }} | {{ k3s_version_install }} sh -"
+    - name: "curl -sfL {{ k3s_install_script }} | {{ k3s_version_install }} sh - pillar.get("k3s:config:control-plane", False)"
     # The 'unless' condition checks for the main K3s executable.
     # If the file exists, the installation command will be skipped.
     - unless: test -f {{ k3s_binary }}
