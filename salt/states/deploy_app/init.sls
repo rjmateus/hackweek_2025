@@ -42,7 +42,7 @@ k3s_config_file:
   {% set k3s_version_install = "INSTALL_K3S_VERSION=" + salt['pillar.get']('k3s_version', "") %}
 {% endif %}
 
-{% set k3s_agent = "server" %}
+{% set k3s_agent = "INSTALL_K3S_EXEC=server" %}
 
 {% if salt['pillar.get']('k3s:config:agent', False) %}
   {% set k3s_agent = "INSTALL_K3S_EXEC=agent" %}
