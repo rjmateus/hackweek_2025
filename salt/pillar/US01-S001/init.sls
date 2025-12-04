@@ -11,7 +11,7 @@ demo_app:
 
 k3s_version: v1.34.2+k3s1
 
-#k3s_version: v1.32.10+k3s1
+# k3s_version: v1.32.10+k3s1
 
 {% set minion_id = grains['id'] %}
 
