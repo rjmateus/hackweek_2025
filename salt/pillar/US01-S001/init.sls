@@ -22,7 +22,6 @@ k3s:
     # Set the token once for all nodes
     token: "token-for-US01-S001-T003"
 {% if minion_id.startswith('US01-S001-T003-N0') %}
-
     # --- Primary Server Configuration ---
     cluster-init: True
     server: None # Explicitly set to None for the cluster-init node
