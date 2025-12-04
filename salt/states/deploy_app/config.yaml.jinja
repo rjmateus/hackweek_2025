@@ -1,0 +1,15 @@
+{% if server is not none %}
+server: {{ server }}
+{% endif %}
+{% if token is not none %}
+token: {{ token }}
+{% endif %}
+{% if cluster_init %}
+cluster-init: {{ cluster_init }}
+{% endif %}
+{% if tls_san_list is defined and tls_san_list|length > 0 %}
+tls-san:
+{% for san in tls_san_list %}
+  - {{ san }}
+{% endfor %}
+{% endif %}

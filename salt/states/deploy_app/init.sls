@@ -12,16 +12,52 @@ k3s_prerequisites:
     - pkgs:
       - curl
 
-# 2. Install K3s (Server Mode) if the binary is NOT present
+# 2. set k3s Configuration
+
+{% set k3s_config = salt['pillar.get']('k3s:config', {}) %}
+
+k3s_config_dir:
+  file.directory:
+    - name: /etc/rancher/k3s
+    - user: root
+    - group: root
+    - mode: 755
+    - makedirs: True
+
+k3s_config_file:
+  file.managed:
+    - name: /etc/rancher/k3s/config.yaml
+    - source: salt://deploy_app/config.yaml.jinja  # Path to your template file
+    - user: root
+    - group: root
+    - mode: 600
+    - template: jinja
+    - defaults:
+        server: {{ k3s_config.get('server', None) }}
+        token: {{ k3s_config.get('token', None) }}
+        cluster_init: {{ k3s_config.get('cluster-init', False) }}
+        tls_san_list: {{ k3s_config.get('tls-san', []) }}
+    - require:
+      - file: k3s_config_dir
+
+
+{% set k3s_version = "" %}
+
+{% if pillar['k3s'] is defined and 'version' in pillar['k3s'] %}
+  {% set k3s_version = "INSTALL_K3S_VERSION=" + salt['pillar.get']('k3s:version', "") %}
+{% endif %}
+
+
+# 3. Install K3s (Server Mode) if the binary is NOT present
 k3s_install_server:
   cmd.run:
-    - name: "curl -sfL {{ k3s_install_script }} | INSTALL_K3S_VERSION=v1.32.10+k3s1 sh -"
+    - name: "curl -sfL {{ k3s_install_script }} | {{ k3s_version }} sh -"
     # The 'unless' condition checks for the main K3s executable.
     # If the file exists, the installation command will be skipped.
     - unless: test -f {{ k3s_binary }}
 
 
-# 3. Ensure K3s is running
+# 4. Ensure K3s is running
 # The K3s installation script sets up a systemd service, so we just check on it.
 k3s_service_running:
   service.running:
