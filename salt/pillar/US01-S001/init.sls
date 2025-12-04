@@ -4,7 +4,7 @@ demo_app:
         tag: 0.0.2
     helm: 
         repo: oci://registry-1.docker.io/rjmateus/demo-app
-        version: 0.0.1
+        version: 0.0.2
 
 ## define the k3s version. In this case is the same for all terminal in the store.
 ## We can have another condition in here to control differente k3s versions in each terminal
