@@ -50,6 +50,10 @@ kubeconfig_symlink:
 helm:
   pkg.installed
 
+## deploy update controller
+# TODO
+
+## deploy demo app
 helm_release_is_present:
   helm.release_present:
     - name: demo-release
