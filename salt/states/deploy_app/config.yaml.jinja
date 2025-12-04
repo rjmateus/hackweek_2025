@@ -1,8 +1,12 @@
-{% set server = salt['pillar.get']('k3s:config:server') %}
-{% set token = salt['pillar.get']('k3s:config:token') %}
-{% set cluster_init = salt['pillar.get']('k3s:config:cluster-init', False) %}
-{% set tls_san_list = salt['pillar.get']('k3s:config:tls-san', []) %}
+{%- set server = salt['pillar.get']('k3s:config:server', None) %}
+{%- set token = salt['pillar.get']('k3s:config:token', None) %}
+{%- set cluster_init = salt['pillar.get']('k3s:config:cluster-init', False) %}
+{%- set tls_san_list = salt['pillar.get']('k3s:config:tls-san', []) %}
 
+{% if pillar.k3s is defined and pillar.k3s.config.server is defined and pillar.k3s.config.server is not none %}
+{% if server is not none  %}
+server: {{ server }}
+{% endif %}
 {% if token is not none %}
 token: {{ token }}
 {% endif %}

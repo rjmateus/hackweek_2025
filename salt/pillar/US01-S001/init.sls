@@ -24,7 +24,7 @@ k3s:
 {% if minion_id.startswith('US01-S001-T003-N0') %}
     # --- Primary Server Configuration ---
     cluster-init: True
-    server: None # Explicitly set to None for the cluster-init node
+#    server: None # Explicitly set to None for the cluster-init node
     tls-san:
       - "US01-S001-T003-N0.suse.lab"
     control-plane: True
