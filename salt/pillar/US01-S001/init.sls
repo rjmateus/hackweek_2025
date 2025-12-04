@@ -27,11 +27,13 @@ k3s:
     server: None # Explicitly set to None for the cluster-init node
     tls-san:
       - "US01-S001-T003-N0.suse.lab"
+    control-plane: True
 {% else %}
     # --- Agent Node Configuration ---
     cluster-init: False
     server: "https://us01-s001-t003-n0.suse.lab:6443"
     tls-san: [] # Agent nodes typically don't need SANs
+    control-plane: False
 {% endif %}
 
 {% endif %}

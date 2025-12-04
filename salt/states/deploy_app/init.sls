@@ -85,6 +85,8 @@ kubeconfig_symlink:
     - require:
       - file: ensure_kubeconfig_path
 
+{% if pillar.get("k3s:control-plane", False) %}
+
 helm:
   pkg.installed
 
@@ -127,5 +129,6 @@ helm_release_is_present:
     - require:
         - pkg: helm
         - service: k3s_service_running
+{% endif %}
 
  {% endif %}
