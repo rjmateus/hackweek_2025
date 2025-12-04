@@ -32,11 +32,6 @@ k3s_config_file:
     - group: root
     - mode: 600
     - template: jinja
-    - defaults:
-        server: {{ k3s_config.get('server', None) }}
-        token: {{ k3s_config.get('token', None) }}
-        cluster_init: {{ k3s_config.get('cluster-init', False) }}
-        tls_san_list: {{ k3s_config.get('tls-san', []) | lower }}
     - require:
       - file: k3s_config_dir
 
