@@ -36,7 +36,7 @@ k3s_config_file:
         server: {{ k3s_config.get('server', None) }}
         token: {{ k3s_config.get('token', None) }}
         cluster_init: {{ k3s_config.get('cluster-init', False) }}
-        tls_san_list: {{ k3s_config.get('tls-san', []) }}
+        tls_san_list: {{ k3s_config.get('tls-san', []) | lower }}
     - require:
       - file: k3s_config_dir
 
@@ -90,7 +90,7 @@ helm:
 
 ## deploy update controller
 
-{% if k3s_config.get('server') is not defined %}
+{% if salt['pillar.get']('k3s:config:server', None) is None %}
 
 install_update_controller:
    cmd.run:
