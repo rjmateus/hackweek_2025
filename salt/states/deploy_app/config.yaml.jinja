@@ -1,7 +1,7 @@
 #{% set server = pillar.get('k3s:config:server') %}
 
 
-{% server is not none  %}
+{% if server is not none  %}
 server: {{ server }}
 {% endif %}
 
