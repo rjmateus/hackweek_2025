@@ -16,7 +16,7 @@ k3s_prerequisites:
 # 2. Install K3s (Server Mode) if the binary is NOT present
 k3s_install_server:
   cmd.run:
-    - name: "curl -sfL {{ k3s_install_script }} | INSTALL_K3S_VERSION=v1.33.6+k3s1 sh -"
+    - name: "curl -sfL {{ k3s_install_script }} | INSTALL_K3S_VERSION=v1.32.10+k3s1 sh -"
     # The 'unless' condition checks for the main K3s executable.
     # If the file exists, the installation command will be skipped.
     - unless: test -f {{ k3s_binary }}
