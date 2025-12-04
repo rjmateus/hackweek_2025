@@ -55,6 +55,8 @@ k3s_install_server:
     # The 'unless' condition checks for the main K3s executable.
     # If the file exists, the installation command will be skipped.
     - unless: test -f {{ k3s_binary }}
+    - require:
+      - file: k3s_config_file
 
 
 # 4. Ensure K3s is running

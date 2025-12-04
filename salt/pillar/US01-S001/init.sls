@@ -6,13 +6,15 @@ demo_app:
         repo: oci://registry-1.docker.io/rjmateus/demo-app
         version: 0.0.1
 
+k3s:
+  version: v1.32.10+k3s1
+
 {% set minion_id = grains['id'] %}
 
 # Specific data for terminal 3
 {% if minion_id.startswith('US01-S001-T003') %}
 
 k3s:
-  version: v1.32.10+k3s1
   config:
     id: {{minion_id}}
     # Set the token once for all nodes
