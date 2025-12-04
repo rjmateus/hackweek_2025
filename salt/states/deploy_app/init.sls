@@ -90,7 +90,7 @@ helm:
 
 ## deploy update controller
 
-{% if salt['pillar.get']('k3s:config:server', None) is None %}
+{% if salt['pillar.get']('k3s:config:server', None) is none %}
 
 install_update_controller:
    cmd.run:
