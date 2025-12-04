@@ -55,8 +55,11 @@ In MLM create an activation-key with:
 
 # Register machine to MLM
 
-Before register the machine make sure to have the needed pillar information for the system in the pillar data.
-If you are not sure about the pillar data, you can disable the deploy at registration time, and just register the machine, check the pillar data. The application deployment can done after registration (by assigning configuration channel, and apply the state).
+Before register the machine make sure to have the needed pillar information for the system in the pillar data. 
+The example pillar data can be seen ar salt/pillar sub-folder.
+
+If you are not sure about the pillar data, you can disable the deploy at registration time, and just register the machine, check the pillar data. The application deployment can done after registration (by assigning configuration channel, and apply that state or the high state).
+
 
 Use the regular registration machanism and select the created activation key.
 
@@ -87,14 +90,69 @@ All large scale customer have some kind of naming convention to know which machi
 - Assuming naming convention:
     - US01-S001-T001-N0 - machine deployed with sle micro 6.1
     - US01-S001-T002-N0 - sles15sp7
-    - US01-S001-T003-N0 - sles15sp7
-    - US01-S001-T003-N1 - sles15sp7
+    - Multi-node cluster terminal
+        - US01-S001-T003-N0 - sles15sp7
+        - US01-S001-T003-N1 - sles15sp7
+        - US01-S001-T003-N2 - sles15sp7
 where: 
     "US01" -> region
     "S001" -> store number
     "T001" -> terminal number
     "N0" -> termonal node number
 
+
+# Pillar structure
+
+
+Users can define the following pillar information for the machines:
+
+```
+demo_app:
+    image:
+        repository: rjmateus/hw2025
+        tag: 0.0.1
+    helm: 
+        repo: oci://registry-1.docker.io/rjmateus/demo-app
+        version: 0.0.1
+    replicaCount: 1
+
+k3s_version: v1.32.10+k3s1
+
+
+# Specific data for terminal 3
+{% if minion_id.startswith('US01-S001-T003') %}
+
+k3s:
+  config:
+    token: "token-for-US01-S001-T003"
+    cluster-init: True
+    tls-san:
+      - "US01-S001-T003-N0.suse.lab"
+    control-plane: True
+    agent: True    
+    server: "https://us01-s001-t003-n0.suse.lab:6443"
+{% endif %}
+```
+
+For the first node to be deployed: 
+    - control-plane musth be true
+    - agent: shoud not be set of be false
+    - server: must not be present at all (not even with None).
+
+For a secundary control-plane node:
+    - cluster-init: must be false
+    - agent: false or not set
+
+For a agent node control-plane node:
+    - cluster-init: False
+    - server: "https://<Control-plane-url>:6443"
+    - tls-san: [] # Agent nodes typically don't need SANs
+    - control-plane: False
+
+
+## Pillar example at salt/pillar explained
+
+TODO
 
 # Troubleshoting
 
@@ -105,6 +163,8 @@ Force data update
 `salt '<MINION_ID>' saltutil.refresh_pillar`
 
 `salt '<MINION_ID>' saltutil.sync_all`
+
+
 
 
 # Alternative solution for pillar and state assign
