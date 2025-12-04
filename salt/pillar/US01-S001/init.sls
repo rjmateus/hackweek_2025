@@ -6,7 +6,7 @@ demo_app:
         repo: oci://registry-1.docker.io/rjmateus/demo-app
         version: 0.0.1
 
-{% set minion_id = __opts__['id'] %}
+{% set minion_id = grains['id'] %}
 
 # Specific data for terminal 3
 {% if minion_id.startswith('US01-S001-T003') %}
