@@ -1,4 +1,4 @@
-{% set server = salt['pillar.get']('k3s:config:server') %}
+{% set server = pillar.get('k3s:config:server') %}
 {% set token = salt['pillar.get']('k3s:config:token') %}
 {% set cluster_init = salt['pillar.get']('k3s:config:cluster-init', False) %}
 {% set tls_san_list = salt['pillar.get']('k3s:config:tls-san', []) %}
