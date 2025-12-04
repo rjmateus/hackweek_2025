@@ -11,7 +11,6 @@ k3s_prerequisites:
   pkg.installed:
     - pkgs:
       - curl
-      - helm
 
 # 2. Install K3s (Server Mode) if the binary is NOT present
 k3s_install_server:
@@ -47,6 +46,9 @@ kubeconfig_symlink:
     - force: True # Ensures it overwrites any existing file at the destination
     - require:
       - file: ensure_kubeconfig_path
+
+helm:
+  pkg.installed
 
 helm_release_is_present:
   helm.release_present:
