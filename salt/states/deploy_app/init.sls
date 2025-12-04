@@ -106,7 +106,7 @@ update_controler_plan:
     - mode: 600
     - template: jinja
     - defaults:
-        k3s_version: {{ k3s_config.get('k3s_version', None) }}
+        k3s_version: {{ salt['pillar.get']('k3s_version', None) }}
     - require:
       - file: k3s_config_dir
       - cmd: install_update_controller
