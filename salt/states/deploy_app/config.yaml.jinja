@@ -1,5 +1,8 @@
-{% salt['pillar.get']('k3s:config:server', None) is not none  %}
-server: {{ salt['pillar.get']('k3s:config:server') }}
+#{% set server = pillar.get('k3s:config:server') %}
+
+
+{% server is not none  %}
+server: {{ server }}
 {% endif %}
 
 {% if token is not none %}
