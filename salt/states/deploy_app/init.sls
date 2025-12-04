@@ -131,6 +131,7 @@ helm_release_is_present:
        - ingress.host={{ salt['grains.get']('fqdn') | lower }} # <-- This is THE Machine FQDN
        - image.tag={{pillar['demo_app']['image']['tag']}}
        - image.repository={{pillar['demo_app']['image']['repository']}}
+       - replicaCount={{pillar['demo_app']['replicaCount']}}
     - require:
         - pkg: helm
         - service: k3s_service_running
