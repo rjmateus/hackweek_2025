@@ -8,8 +8,8 @@ demo_app:
 
 ## define the k3s version. In this case is the same for all terminal in the store.
 ## We can have another condition in here to control differente k3s versions in each terminal
-k3s_version: v1.34.2+k3s1
-#k3s_version: v1.32.10+k3s1
+#k3s_version: v1.34.2+k3s1
+k3s_version: v1.32.10+k3s1
 
 {% set minion_id = grains['id'] %}
 

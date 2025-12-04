@@ -4,7 +4,6 @@
 {%- set tls_san_list = salt['pillar.get']('k3s:config:tls-san', []) %}
 
 {% if pillar.k3s is defined and pillar.k3s.config.server is defined and pillar.k3s.config.server is not none %}
-{% if server is not none  %}
 server: {{ server }}
 {% endif %}
 {% if token is not none %}
