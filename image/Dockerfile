@@ -8,6 +8,7 @@ FROM registry.suse.com/suse/nginx:1.21
 # web root directory inside the container.
 #COPY index.html /usr/share/nginx/html/index.html
 COPY index.html /srv/www/htdocs/index.html
+COPY suse_store_image.png /srv/www/htdocs/suse_store_image.png
 
 # Expose port 80 so the container can receive traffic.
 # Nginx is configured by default to listen on this port.
