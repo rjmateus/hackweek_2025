@@ -17,6 +17,16 @@ k3s_version: v1.32.10+k3s1
 
 {% set minion_id = grains['id'] %}
 
+# Specific data for terminal 2
+{% if minion_id.startswith('US01-S001-T002-N0') %}
+k3s:
+  config:
+    control-plane: True
+    cluster-init: True
+    tls-san:
+      - "US01-S001-T002-N0.suse.lab"
+{% endif %}
+
 # Specific data for terminal 3
 {% if minion_id.startswith('US01-S001-T003') %}
 
