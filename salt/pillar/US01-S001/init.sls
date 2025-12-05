@@ -1,18 +1,18 @@
 demo_app:
     image:
         repository: rjmateus/hw2025
-        tag: 1.0.0
+        tag: 0.0.1
     helm: 
         repo: oci://registry-1.docker.io/rjmateus/demo-app
         version: 0.0.1
-    replicaCount: 3
+    replicaCount: 1
 
 ## define the k3s version. In this case is the same for all terminal in the store.
 ## We can have another condition in here to control differente k3s versions in each terminal
 
-# k3s_version: v1.32.10+k3s1
-
-k3s_version: v1.34.2+k3s1
+k3s_version: v1.32.10+k3s1
+# k3s_version: v1.33.6+k3s1
+#k3s_version: v1.34.2+k3s1
 
 
 {% set minion_id = grains['id'] %}
