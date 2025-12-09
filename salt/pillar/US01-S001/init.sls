@@ -1,11 +1,11 @@
 demo_app:
     image:
         repository: rjmateus/hw2025
-        tag: 1.0.0
+        tag: 1.0.1
     helm: 
         repo: oci://registry-1.docker.io/rjmateus/demo-app
         version: 0.0.1
-    replicaCount: 3
+    replicaCount: 4
 
 ## define the k3s version. In this case is the same for all terminal in the store.
 ## We can have another condition in here to control differente k3s versions in each terminal
