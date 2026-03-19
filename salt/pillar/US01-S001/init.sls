@@ -1,7 +1,7 @@
 demo_app:
     image:
         repository: rjmateus/susecon2026-web-app
-        tag: v1.0
+        tag: v2.0
     helm: 
         repo: oci://registry-1.docker.io/rjmateus/demo-app
         version: 0.0.1
